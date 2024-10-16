@@ -1,0 +1,215 @@
+Installation mvc-playwright
+
+
+Pour mettre en place une interface web dynamique dans un système MVC qui déclenche l'exécution de votre script Mail.js, voici une solution basique en Node.js avec Express.js pour la gestion du serveur web, EJS pour le moteur de rendu de la vue, et un contrôleur pour appeler le script.
+
+Étape 1 : Installer les dépendances
+Créez un projet Node.js :
+
+bash
+Copier le code
+mkdir MailMVC
+cd MailMVC
+npm init -y
+Installez les dépendances requises :
+
+bash
+Copier le code
+npm install express ejs child_process
+npm install playwright
+Étape 2 : Structure du projet
+Créez la structure suivante :
+
+java
+Copier le code
+MailMVC/
+│
+├── controllers/
+│   └── mailController.js
+├── views/
+│   └── index.ejs
+├── public/
+│   └── css/
+│       └── styles.css
+├── Mail.js
+├── app.js
+└── package.json
+Étape 3 : Le fichier Mail.js
+Voici votre script Mail.js inchangé :
+
+js
+Copier le code
+const { chromium } = require('playwright');
+
+(async () => {
+  const browser = await chromium.launch({ headless: false });
+  const page = await browser.newPage();
+
+  // Navigue vers Google login
+  await page.goto('https://accounts.google.com/');
+  await page.getByLabel('Adresse e-mail ou téléphone').click();
+  await page.getByLabel('Adresse e-mail ou téléphone').fill('brice.mihajaniriana@konecta-group.com');
+  
+  // Click sur Suivant
+  await page.getByRole('button', { name: 'Suivant' }).click();
+  await page.getByLabel('Saisissez votre mot de passe').click();
+  await page.screenshot({ path: 'example.png' });
+  await page.getByLabel('Saisissez votre mot de passe').fill('b2s-group.com@2038');
+  await page.getByRole('button', { name: 'Suivant' }).click();
+})();
+Étape 4 : Le contrôleur mailController.js
+Ce contrôleur va exécuter le script Mail.js lorsqu'il est appelé :
+
+js
+Copier le code
+const { exec } = require('child_process');
+
+exports.sendMail = (req, res) => {
+    exec('node Mail.js', (err, stdout, stderr) => {
+        if (err) {
+            console.error(`Erreur lors de l'exécution du script : ${stderr}`);
+            return res.status(500).send('Erreur lors de l\'exécution du script');
+        }
+        console.log(`Résultat : ${stdout}`);
+        res.send('Le script Mail.js a été exécuté avec succès');
+    });
+};
+Étape 5 : Le fichier principal app.js
+Ce fichier initialise le serveur, configure les routes, et relie le contrôleur et les vues.
+
+js
+Copier le code
+const express = require('express');
+const app = express();
+const mailController = require('./controllers/mailController');
+
+// Configurer EJS comme moteur de rendu
+app.set('view engine', 'ejs');
+
+// Route principale
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+// Route pour lancer le script Mail.js
+app.post('/send-mail', mailController.sendMail);
+
+// Lancer le serveur
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Serveur démarré sur le port ${PORT}`);
+});
+Étape 6 : Vue index.ejs
+Ce fichier contient le bouton qui déclenche l'exécution du script.
+
+html
+Copier le code
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exécution du Script Mail.js</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Exécuter Mail.js</h1>
+        <form action="/send-mail" method="POST">
+            <button type="submit">Lancer Mail.js</button>
+        </form>
+    </div>
+</body>
+</html>
+Étape 7 : Styles CSS (facultatif)
+Ajoutez un fichier styles.css dans le dossier public/css/ pour styliser la page :
+
+css
+Copier le code
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+Étape 8 : Lancer l'application
+Démarrez le serveur :
+
+bash
+Copier le code
+node app.js
+Ouvrez votre navigateur et accédez à http://localhost:3000. Vous verrez un bouton "Lancer Mail.js". En cliquant dessus, le script Mail.js sera exécuté.
+
+Explication du fonctionnement :
+Vue (View) : index.ejs affiche le bouton "Lancer Mail.js".
+Contrôleur (Controller) : mailController.js reçoit la demande et exécute le script Mail.js à l'aide de child_process.exec.
+Modèle (Model) : Le script Mail.js effectue les actions décrites (automatisation via Playwright).
+Cela vous permet d'exécuter le script Playwright depuis une interface web de manière simple.
+
+
+
+
+
+
+Vous avez dit :
+Voici l'erreur expliquer et comment en sortir :"Erreur lors de l'exécution du script : node:internal/process/promises:391
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+browserType.launch: Executable doesn't exist at C:\Users\admincomdata\AppData\Local\ms-playwright\chromium-1140\chrome-win\chrome.exe
+╔═════════════════════════════════════════════════════════════════════════╗
+║ Looks like Playwright Test or Playwright was just installed or updated. ║
+║ Please run the following command to download new browsers:              ║
+║                                                                         ║
+║     npx playwright install                                              ║
+║                                                                         ║
+║ <3 Playwright Team                                                      ║
+╚═════════════════════════════════════════════════════════════════════════╝
+    at D:\node_project\mvc-playwright\Mail.js:6:34
+    at Object.<anonymous> (D:\node_project\mvc-playwright\Mail.js:27:3) {
+  name: 'Error'
+}
+
+Node.js v20.17.0"
+ChatGPT a dit :
+ChatGPT
+L'erreur indique que Playwright ne trouve pas l'exécutable du navigateur Chromium à l'emplacement attendu. Cela se produit souvent après l'installation initiale de Playwright ou lors de la mise à jour de la version. L'erreur fournit une solution simple pour résoudre ce problème.
+
+Voici les étapes pour corriger l'erreur :
+Cause de l'erreur :
+
+Playwright nécessite que les fichiers exécutables des navigateurs (comme Chromium, Firefox, ou WebKit) soient téléchargés pour fonctionner.
+Le message d'erreur vous indique que l'exécutable Chromium est manquant, donc Playwright ne peut pas lancer le navigateur.
+Solution : Télécharger les navigateurs Playwright
+
+Pour résoudre cette erreur, il suffit d'exécuter la commande suivante dans votre terminal à la racine de votre projet :
+
+bash
+Copier le code
+npx playwright install
+Cette commande va télécharger les navigateurs nécessaires (y compris Chromium) et les installer dans le répertoire approprié.
+
+Vérification de l'installation :
+
+Après avoir exécuté la commande ci-dessus, assurez-vous que les navigateurs sont correctement installés en relançant votre script Node.js :
+
+bash
+Copier le code
+node app.js
+Note supplémentaire :
+
+Si vous avez spécifié un chemin particulier pour le navigateur ou si vous utilisez une version spécifique de Chromium, assurez-vous que ce chemin est correct.
+Vous pouvez également personnaliser le chemin du navigateur si nécessaire en passant l'option executablePath dans la méthode launch.
+Exemple pour spécifier un chemin personnalisé :
+
+js
+Copier le code
+const browser = await chromium.launch({
+    headless: false,
+    executablePath: 'path/to/chrome'
+});
+En suivant ces étapes, Playwright téléchargera le navigateur manquant et résoudra l'erreur liée à l'exécutable Chromium absent.
