@@ -3,33 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exécution du Script Mail.js</title>
+    <title>Calcul Consommation Électricité et Eau Au Club Academy Prémiere étage</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        function toggleInput() {
+            var selection = document.getElementById('consumerType').value;
+            var damatsInput = document.getElementById('damatsInput');
+            var rabreInput = document.getElementById('rabreInput');
+
+            if (selection === 'damats') {
+                damatsInput.style.display = 'block';
+                rabreInput.style.display = 'none';
+            } else if (selection === 'rabre') {
+                damatsInput.style.display = 'none';
+                rabreInput.style.display = 'block';
+            } else {
+                damatsInput.style.display = 'none';
+                rabreInput.style.display = 'none';
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1>Exécuter Mail.js</h1>
-        <!-- Formulaire pour Mail.js -->
-        <form action="/send-mail" method="POST">
-            <button type="submit">Lancer Help</button>
-        </form>
-         
-        <h1>Connecter Facebook</h1>
-        <!-- Formulaire pour Facebook -->
-        <form action="/send-facebook" method="POST">
-            <button type="submit">Lancer Facebook</button>
-        </form>
+        <h1>Formulaire de Consommation Club Academy R+1</h1>
 
-        <h1>Liberation H360</h1>
-        <!-- Formulaire pour la route Liberation H360 -->
-        <form action="/send-LibHermes" method="POST">
-            <button type="submit">Liberer Login Hermes</button>
-        </form>
+        <form action="/calculate" method="POST">
+            <!-- Kilowatts consommés -->
+            <label for="kilowattheure">Kilowattheure total :</label>
+            <input type="number" id="kilowattheure" name="kilowattheure" required><br>
 
-        <h1>Login sur H360</h1>
-        <!-- Formulaire pour la route Liberation H360 -->
-        <form action="/send-LogHermes" method="POST">
-            <button type="submit">Loguer sur Hermes</button>
+            <!-- Charges et redevances -->
+            <label for="charge_redevance">Charges et redevances :</label>
+            <input type="number" id="charge_redevance" name="charge_redevance" required><br>
+
+            <!-- Menu déroulant pour choisir entre DaMats et Rabre -->
+            <label for="consumerType">Choisissez un consommateur :</label>
+            <select id="consumerType" name="consumerType" onchange="toggleInput()" required>
+                <option value="">Sélectionnez un consommateur</option>
+                <option value="damats">Kilowattheures consommés par DaMats</option>
+                <option value="rabre">Kilowattheures consommés par Rabre</option>
+            </select><br>
+
+            <!-- Champ de saisie pour DaMats (affiché uniquement si sélectionné) -->
+            <div id="damatsInput" style="display:none;">
+                <label for="damats">Kilowattheures consommés par DaMats :</label>
+                <input type="number" id="damats" name="damats"><br>
+            </div>
+
+            <!-- Champ de saisie pour Rabre (affiché uniquement si sélectionné) -->
+            <div id="rabreInput" style="display:none;">
+                <label for="rabre">Kilowattheures consommés par Rabre :</label>
+                <input type="number" id="rabre" name="rabre"><br>
+            </div>
+
+            <!-- Consommation d'eau en mètres cubes -->
+            <label for="water">Consommation d'eau (m³) :</label>
+            <input type="number" id="water" name="water" required><br>
+
+            <!-- Boutons de calcul -->
+            <button type="submit">Calculer</button>
         </form>
     </div>
 </body>

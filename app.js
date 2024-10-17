@@ -1,36 +1,30 @@
 const express = require('express');
 const app = express();
-const mailController = require('./controllers/mailController');
+const consumptionController = require('./controllers/consumptionController');
 
-// Configurer EJS comme moteur de rendu
+// Configuration EJS
 app.set('view engine', 'ejs');
 
-// Middleware pour servir les fichiers statiques
+// Middleware pour traiter les données des formulaires
+app.use(express.urlencoded({ extended: true }));
+// Middleware pour servir les fichiers statiques mirelier  amin'ilay CSS io
 app.use(express.static('public'));
 
-// Middleware pour parser les données des formulaires
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Route pour la page principale
+// Route pour afficher le formulaire
 app.get('/', (req, res) => {
     res.render('index');
 });
 
-// Route pour lancer Mail.js
-app.post('/send-mail', mailController.sendMail);
+// Route pour calculer la consommation
+app.post('/calculate', consumptionController.calculateConsumption);
 
-// Route pour connecter Facebook
-app.post('/send-facebook', mailController.sendFacebook);
-
-// Route pour lancer LiberationH360
-app.post('/send-LibHermes', mailController.LibHermes);
-
-// Route pour lancer LogH360
-app.post('/send-LogHermes', mailController.LogHermes);
+// Route pour afficher le résultat
+app.get('/result', (req, res) => {
+    res.render('result', { totalElectricity: 0, totalWater: 0, totalPrice: 0, damatsTotalELec: 0, rabreTotal: 0, Damats: 0, Rabre: 0});
+});
 
 // Lancer le serveur
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3020;
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur le port ${PORT}`);
 });

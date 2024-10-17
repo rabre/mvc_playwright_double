@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Résultats de la Consommation</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Résultats de la consommation</h1>
+        <p>Total consommation électrique : <%= totalElectricity %> Ar</p>
+        <p>Total consommation d'eau : <%= totalWater %> Ar</p>
+        <p>Total prix (eau + électricité) : <%= totalPrice %> Ar</p>
+
+        <p>Sous-total pour DaMats : <%= damatsTotal %> Ar</p>
+        <p>Sous-total pour Rabre : <%= rabreTotal %> Ar</p>
+        <!--Afficher les sous total elec + eau  par personne -->
+        <p>DaMats  Devra Payer  : <%= Damats %> Ar</p>
+        <p>Rabre   Devra Payer  : <%= Rabre %> Ar</p>
+
+
+        <a href="/">Revenir au formulaire</a>
+    </div>
+</body>
+</html>

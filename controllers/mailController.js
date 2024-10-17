@@ -48,3 +48,15 @@ exports.LogHermes = (req, res) => {
         res.send(`Le script loginH360.js a été exécuté avec succès : ${stdout}`);
     });
 };
+
+// Fonction pour exécuter le script Python
+exports.sendPython = (req, res) => {
+    exec('python python.py', (err, stdout, stderr) => {  // Assurez-vous que 'python' est bien installé et accessible dans le PATH
+        if (err) {
+            console.error(`Erreur lors de l'exécution du script Python : ${stderr}`);
+            return res.status(500).send('Erreur lors de l\'exécution du script Python');
+        }
+        console.log(`Résultat Python : ${stdout}`);
+        res.send('Le script Python a été exécuté avec succès');
+    });
+};
